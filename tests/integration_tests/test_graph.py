@@ -1,10 +1,12 @@
 import uuid
+from typing import cast
 
 import pytest
 from langchain_core.runnables import RunnableConfig
 from langsmith import expect, unit
 
 from retrieval_graph import graph, index_graph
+from retrieval_graph.state import IndexState, InputState
 
 pytestmark = pytest.mark.anyio
 
@@ -19,24 +21,38 @@ async def test_retrieval_graph() -> None:
         configurable={"user_id": user_id, "retriever_provider": "elastic-local"}
     )
 
-    result = await index_graph.ainvoke({"docs": simple_doc}, config)
+    result = await index_graph.ainvoke(cast(IndexState, {"docs": simple_doc}), config)
     expect(result["docs"]).against(lambda x: not x)  # we delete after the end
 
     res = await graph.ainvoke(
-        {"messages": [("user", "Where do cats perform synchronized swimming routes?")]},
+        cast(
+            InputState,
+            {
+                "messages": [
+                    ("user", "Where do cats perform synchronized swimming routes?")
+                ]
+            },
+        ),
         config,
     )
     response = str(res["messages"][-1].content)
     expect(response.lower()).to_contain("bowl")
 
     res = await graph.ainvoke(
-        {"messages": [("user", "Where do cats perform synchronized swimming routes?")]},
-        {
-            "configurable": {
+        cast(
+            InputState,
+            {
+                "messages": [
+                    ("user", "Where do cats perform synchronized swimming routes?")
+                ]
+            },
+        ),
+        RunnableConfig(
+            configurable={
                 "user_id": other_user_id,
                 "retriever_provider": "elastic-local",
             }
-        },
+        ),
     )
     response = str(res["messages"][-1].content)
     expect(response.lower()).against(lambda x: "bowl" not in x)

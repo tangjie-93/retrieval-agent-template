@@ -49,9 +49,7 @@ class IndexConfiguration:
     )
 
     @classmethod
-    def from_runnable_config(
-        cls: Type[T], config: RunnableConfig | None = None
-    ) -> T:
+    def from_runnable_config(cls: Type[T], config: RunnableConfig | None = None) -> T:
         """Create an IndexConfiguration instance from a RunnableConfig object.
 
         Args:
