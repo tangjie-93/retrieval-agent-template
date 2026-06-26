@@ -8,7 +8,6 @@ Functions:
     format_docs: Convert documents to an xml-formatted string.
 """
 
-
 from langchain.chat_models import init_chat_model
 from langchain_core.documents import Document
 from langchain_core.language_models import BaseChatModel

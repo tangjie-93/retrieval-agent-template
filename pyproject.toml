@@ -23,11 +23,14 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["mypy>=1.11.1", "ruff>=0.6.1"]
+dev = ["mypy>=1.11.1,<2.0.0", "ruff>=0.6.1"]
 
 [build-system]
 requires = ["setuptools>=73.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[tool.uv]
+constraint-dependencies = ["mypy<2.0.0"]
 
 [tool.setuptools]
 packages = ["langgraph.templates.retrieval_graph", "retrieval_graph"]
@@ -67,5 +70,6 @@ convention = "google"
 dev = [
     "anyio>=4.7.0",
     "langgraph-cli[inmem]>=0.1.71",
+    "mypy>=1.11.1,<2.0.0",
     "pytest>=9.0.3",
 ]
