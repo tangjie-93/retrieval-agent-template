@@ -2,7 +2,7 @@
 
 本文档根据 `README.md` 整理，用于快速理解和使用 LangGraph Retrieval Chat Bot Template。
 
-## 项目简介
+## 1. 项目简介
 
 这是一个用于构建检索增强问答 Agent 的入门模板。它基于 [LangGraph](https://github.com/langchain-ai/langgraph)，并可以在 [LangGraph Studio](https://github.com/langchain-ai/langgraph-studio) 中运行和调试。
 
@@ -14,7 +14,7 @@
 static/studio_ui.png
 ```
 
-## 核心功能
+## 2. 核心功能
 
 该项目包含两个主要图：
 
@@ -35,11 +35,11 @@ static/studio_ui.png
 
 默认情况下，系统会基于用户已经索引的文档回答问题，并通过 `user_id` 实现个性化数据隔离。
 
-## 快速开始
+## 3. 快速开始
 
 使用前请先安装 LangGraph Studio。安装完成后，在模板目录中进行以下配置。
 
-### 1. 创建环境变量文件
+### 3.1 创建环境变量文件
 
 进入 `retrieval-agent-template` 目录后执行：
 
@@ -47,11 +47,11 @@ static/studio_ui.png
 cp .env.example .env
 ```
 
-### 2. 选择检索器和索引后端
+### 3.2 选择检索器和索引后端
 
 根据你选择的检索器、索引后端、模型提供商和嵌入模型，把对应密钥和连接信息写入 `.env`。
 
-## 配置检索器
+## 4. 配置检索器
 
 默认检索器配置如下：
 
@@ -67,7 +67,7 @@ retriever_provider: elastic
 
 这三个后端在当前模板中是**单选关系**。也就是说，`retriever_provider` 一次只配置一个值，例如 `elastic`、`elastic-local`、`mongodb` 或 `pinecone`。如果要同时写入或查询多个检索后端，需要额外改造检索层代码。
 
-### 检索后端对比
+### 4.1 检索后端对比
 
 | 后端 | 优点 | 缺点 | 适合场景 |
 | --- | --- | --- | --- |
@@ -81,11 +81,11 @@ retriever_provider: elastic
 - 如果你的业务数据已经在 MongoDB Atlas，优先选 MongoDB Atlas，减少数据同步和系统复杂度。
 - 如果你主要想快速跑通 RAG 原型，且检索需求以向量相似度为主，优先选 Pinecone Serverless。
 
-### Elasticsearch
+### 4.2 Elasticsearch
 
 Elasticsearch 是开源的分布式搜索与分析引擎，也可以作为向量数据库使用。该模板支持 Elastic Cloud、Elasticsearch Serverless 和本地 Docker 部署。
 
-#### Elasticsearch Serverless
+#### 4.2.1 Elasticsearch Serverless
 
 1. 注册 Elasticsearch Serverless 14 天免费试用。
 2. 在首页的连接信息区域获取 Elasticsearch URL。
@@ -97,7 +97,7 @@ ELASTICSEARCH_URL=<ES_URL>
 ELASTICSEARCH_API_KEY=<API_KEY>
 ```
 
-#### Elastic Cloud
+#### 4.2.2 Elastic Cloud
 
 1. 注册 Elastic Cloud 14 天免费试用。
 2. 在部署的 Applications 区域获取 Elasticsearch URL。
@@ -109,7 +109,7 @@ ELASTICSEARCH_URL=<ES_URL>
 ELASTICSEARCH_API_KEY=<API_KEY>
 ```
 
-#### 本地 Elasticsearch Docker
+#### 4.2.3 本地 Elasticsearch Docker
 
 可以使用 Docker 启动本地 Elasticsearch：
 
@@ -131,7 +131,7 @@ ELASTICSEARCH_PASSWORD=changeme
 export ELASTICSEARCH_URL=http://localhost:9200
 ```
 
-### MongoDB Atlas
+### 4.3 MongoDB Atlas
 
 MongoDB Atlas 是托管云数据库，并支持向量搜索能力。
 
@@ -172,7 +172,7 @@ MONGODB_URI="mongodb+srv://username:password@your-cluster-url.mongodb.net/?retry
 
 请将 `username`、`password`、`your-cluster-url` 和 `your-cluster-name` 替换为实际信息。
 
-### Pinecone Serverless
+### 4.4 Pinecone Serverless
 
 Pinecone 是托管的云原生向量数据库，可为 AI 应用提供长期记忆能力。
 
@@ -193,7 +193,7 @@ PINECONE_API_KEY=your-api-key
 PINECONE_INDEX_NAME=your-index-name
 ```
 
-## 配置语言模型
+## 5. 配置语言模型
 
 默认模型配置如下：
 
@@ -207,7 +207,7 @@ query_model: anthropic/claude-3-haiku-20240307
 - `response_model`：用于生成最终回答。
 - `query_model`：用于处理和改写检索查询。
 
-### Anthropic
+### 5.1 Anthropic
 
 如果使用 Anthropic 模型，请先获取 API Key，并写入 `.env`：
 
@@ -215,7 +215,7 @@ query_model: anthropic/claude-3-haiku-20240307
 ANTHROPIC_API_KEY=your-api-key
 ```
 
-### OpenAI
+### 5.2 OpenAI
 
 如果使用 OpenAI 模型，请先获取 API Key，并写入 `.env`：
 
@@ -223,7 +223,7 @@ ANTHROPIC_API_KEY=your-api-key
 OPENAI_API_KEY=your-api-key
 ```
 
-## 配置嵌入模型
+## 6. 配置嵌入模型
 
 默认嵌入模型配置如下：
 
@@ -231,7 +231,7 @@ OPENAI_API_KEY=your-api-key
 embedding_model: openai/text-embedding-3-small
 ```
 
-### OpenAI Embeddings
+### 6.1 OpenAI Embeddings
 
 使用 OpenAI 嵌入模型时，需要在 `.env` 中配置：
 
@@ -239,7 +239,7 @@ embedding_model: openai/text-embedding-3-small
 OPENAI_API_KEY=your-api-key
 ```
 
-### Cohere Embeddings
+### 6.2 Cohere Embeddings
 
 使用 Cohere 嵌入模型时，需要在 `.env` 中配置：
 
@@ -247,11 +247,11 @@ OPENAI_API_KEY=your-api-key
 COHERE_API_KEY=your-api-key
 ```
 
-## 使用方式
+## 7. 使用方式
 
 完成检索器、模型密钥和嵌入模型配置后，即可在 LangGraph Studio 中试用。
 
-### 1. 写入索引
+### 7.1 写入索引
 
 打开 LangGraph Studio，在左上角下拉框中选择 `indexer` 图。
 
@@ -263,7 +263,7 @@ COHERE_API_KEY=your-api-key
 
 上传后，内容会按照当前配置的 `user_id` 写入索引。当 `indexer` 从图内存中删除该内容时，表示内容已经持久化到配置的存储提供商中。
 
-### 2. 进行检索问答
+### 7.2 进行检索问答
 
 在左上角下拉框中切换到 `retrieval_graph`。
 
@@ -275,7 +275,7 @@ What does my cat know?
 
 如果更换 `user_id`，系统将无法访问之前用户 ID 下的数据。这说明图中通过 `user_id` 对内容做了简单隔离过滤。
 
-## 自定义方式
+## 8. 自定义方式
 
 你可以从以下方面修改该检索 Agent 模板：
 
@@ -290,7 +290,7 @@ What does my cat know?
 
 修改后应结合具体业务场景进行充分测试，确认变更确实提升了检索和回答效果。
 
-## 开发与调试
+## 9. 开发与调试
 
 在 LangGraph Studio 中迭代图逻辑时，可以编辑历史状态，并从某个历史状态重新运行应用，用于调试特定节点。
 
@@ -304,9 +304,9 @@ What does my cat know?
 
 LangGraph Studio 也可以与 LangSmith 集成，用于更深入的链路追踪、调试和团队协作。
 
-## 关键配置摘要
+## 10. 关键配置摘要
 
-### 检索器配置
+### 10.1 检索器配置
 
 ```yaml
 retriever_provider: elastic
@@ -321,20 +321,20 @@ mongodb
 pinecone
 ```
 
-### 模型配置
+### 10.2 模型配置
 
 ```yaml
 response_model: anthropic/claude-3-5-sonnet-20240620
 query_model: anthropic/claude-3-haiku-20240307
 ```
 
-### 嵌入模型配置
+### 10.3 嵌入模型配置
 
 ```yaml
 embedding_model: openai/text-embedding-3-small
 ```
 
-## 相关文件
+## 11. 相关文件
 
 ```text
 retrieval-agent-template/
@@ -354,7 +354,7 @@ retrieval-agent-template/
     └── integration_tests/
 ```
 
-## 建议阅读顺序
+## 12. 建议阅读顺序
 
 1. 先阅读 `README.md` 和本文档，理解整体用途。
 2. 查看 `langgraph.json`，确认图入口和运行配置。

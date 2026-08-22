@@ -1,4 +1,7 @@
-"""This "graph" simply exposes an endpoint for a user to upload docs to be indexed."""
+"""索引图 —— 提供文档上传和索引的入口端点。
+
+图流程：__start__ → index_docs
+"""
 
 from typing import Sequence
 
@@ -14,15 +17,18 @@ from retrieval_graph.state import IndexState
 def ensure_docs_have_user_id(
     docs: Sequence[Document], config: RunnableConfig
 ) -> list[Document]:
-    """Ensure that all documents have a user_id in their metadata.
+    """确保所有文档的 metadata 中都包含 user_id。
 
-        docs (Sequence[Document]): A sequence of Document objects to process.
-        config (RunnableConfig): A configuration object containing the user_id.
+    Args:
+        docs (Sequence[Document]): 待处理的文档序列。
+        config (RunnableConfig): 包含 user_id 的配置对象。
 
     Returns:
-        list[Document]: A new list of Document objects with updated metadata.
+        list[Document]: 带 user_id metadata 的新文档列表。
     """
+    # 从配置中获取 user_id
     user_id = config["configurable"]["user_id"]
+    # 为每个文档的 metadata 注入 user_id，实现用户级数据隔离
     return [
         Document(
             page_content=doc.page_content, metadata={**doc.metadata, "user_id": user_id}
@@ -34,32 +40,38 @@ def ensure_docs_have_user_id(
 async def index_docs(
     state: IndexState, *, config: RunnableConfig | None = None
 ) -> dict[str, str]:
-    """Asynchronously index documents in the given state using the configured retriever.
+    """异步索引文档到向量数据库。
 
-    This function takes the documents from the state, ensures they have a user ID,
-    adds them to the retriever's index, and then signals for the documents to be
-    deleted from the state.
+    本函数从状态中获取文档，确保文档带有 user_id，
+    将其添加到检索器的索引中，然后发出删除信号清空状态中的文档。
 
     Args:
-        state (IndexState): The current state containing documents and retriever.
-        config (Optional[RunnableConfig]): Configuration for the indexing process.r
+        state (IndexState): 当前状态，包含待索引文档。
+        config (Optional[RunnableConfig]): 索引过程配置。
+
+    Returns:
+        dict[str, str]: 返回 {"docs": "delete"}，触发 reduce_docs 清空已索引的文档。
     """
     if not config:
         raise ValueError("Configuration required to run index_docs.")
+    # 创建检索器（根据配置自动选择 Elastic/Pinecone/MongoDB）
     with retrieval.make_retriever(config) as retriever:
+        # 为文档注入 user_id metadata
         stamped_docs = ensure_docs_have_user_id(state.docs, config)
 
+        # 将文档写入向量数据库（异步添加文档和向量）
         await retriever.aadd_documents(stamped_docs)
+    # 返回 "delete" 信号，reduce_docs 会将 state.docs 清空（表示索引完成）
     return {"docs": "delete"}
 
 
-# Define a new graph
-
-
+# 构建索引图
+# IndexState 为状态定义，IndexConfiguration 为上下文配置
 builder = StateGraph(IndexState, context_schema=IndexConfiguration)
+# 添加唯一节点：index_docs
 builder.add_node(index_docs)
+# 定义边：__start__ → index_docs
 builder.add_edge("__start__", "index_docs")
-# Finally, we compile it!
-# This compiles it into a graph you can invoke and deploy.
+# 编译图，使其可被调用和部署
 graph = builder.compile()
 graph.name = "IndexGraph"
