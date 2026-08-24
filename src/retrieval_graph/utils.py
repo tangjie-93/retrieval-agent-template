@@ -8,6 +8,8 @@
     load_chat_model: 按 provider/model 格式加载聊天模型。
 """
 
+import os
+
 from langchain.chat_models import init_chat_model
 from langchain_core.documents import Document
 from langchain_core.language_models import BaseChatModel
@@ -107,7 +109,7 @@ def load_chat_model(fully_specified_name: str) -> BaseChatModel:
 
     Args:
         fully_specified_name (str): 格式为 'provider/model' 的模型名称
-            （如 'anthropic/claude-3-5-sonnet-20240620'）。
+            （如 'openai/gpt-5.5'）。
 
     Returns:
         BaseChatModel: 初始化的聊天模型实例。
@@ -119,5 +121,14 @@ def load_chat_model(fully_specified_name: str) -> BaseChatModel:
         # 无 provider 前缀：使用默认 provider
         provider = ""
         model = fully_specified_name
-    # 调用 langchain 的 init_chat_model 统一加载
+
+    # OpenAI 提供商：支持中转站地址
+    if provider == "openai":
+        from langchain_openai import ChatOpenAI
+
+        return ChatOpenAI(
+            model=model,
+            base_url=os.environ.get("OPENAI_BASE_URL"),
+        )
+    # 其他提供商：调用 langchain 的 init_chat_model 统一加载
     return init_chat_model(model, model_provider=provider)

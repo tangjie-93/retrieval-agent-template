@@ -17,8 +17,6 @@ from langchain_core.vectorstores import VectorStoreRetriever
 from retrieval_graph.configuration import Configuration, IndexConfiguration
 
 ## Encoder 构造器
-
-
 def make_text_encoder(model: str) -> Embeddings:
     """连接配置的文本编码器（Embedding 模型）。
 
@@ -38,7 +36,10 @@ def make_text_encoder(model: str) -> Embeddings:
         case "openai":
             from langchain_openai import OpenAIEmbeddings
 
-            return OpenAIEmbeddings(model=model)
+            return OpenAIEmbeddings(
+                model=model,
+                base_url=os.environ.get("OPENAI_BASE_URL"),
+            )
         case "cohere":
             from langchain_cohere import CohereEmbeddings
 
@@ -48,8 +49,6 @@ def make_text_encoder(model: str) -> Embeddings:
 
 
 ## 检索器构造器
-
-
 @contextmanager
 def make_elastic_retriever(
     configuration: IndexConfiguration, embedding_model: Embeddings

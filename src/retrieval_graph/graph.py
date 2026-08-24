@@ -29,6 +29,7 @@ class SearchQuery(BaseModel):
 
 
 async def generate_query(
+    # * 强制 config 为关键字参数（keyword-only），LangGraph 约定写法
     state: State, *, config: RunnableConfig
 ) -> dict[str, list[str]]:
     """根据当前状态和配置生成搜索查询。
@@ -46,25 +47,27 @@ async def generate_query(
     """
     messages = state.messages
     if len(messages) == 1:
-        # 第一条用户消息，直接使用原始输入进行检索
+        # ── 步骤1（首条消息）：直接使用用户原始输入作为查询 ──
         human_input = get_message_text(messages[-1])
         return {"queries": [human_input]}
     else:
-        # 后续对话中，用 LLM 根据上下文生成精炼的搜索查询
+        # ── 步骤1（后续对话）：从 config 解析配置 ──
         configuration = Configuration.from_runnable_config(config)
-        # 构建查询生成的提示词模板：系统提示 + 消息历史
+
+        # ── 步骤2：构建提示词模板（系统提示 + 消息历史占位符）──
         prompt = ChatPromptTemplate.from_messages(
             [
                 ("system", configuration.query_system_prompt),
                 ("placeholder", "{messages}"),
             ]
         )
-        # 加载查询模型并绑定结构化输出（确保返回 SearchQuery 格式）
+
+        # ── 步骤3：加载查询模型，并绑定结构化输出（强制 LLM 返回 SearchQuery 格式）──
         model = load_chat_model(configuration.query_model).with_structured_output(
             SearchQuery
         )
 
-        # 填充模板变量：消息历史、历史查询、系统时间
+        # ── 步骤4：填充模板变量（消息历史、历史查询、系统时间）──
         message_value = await prompt.ainvoke(
             {
                 "messages": state.messages,
@@ -73,7 +76,8 @@ async def generate_query(
             },
             config,
         )
-        # 调用 LLM 生成结构化查询
+
+        # ── 步骤5：调用 LLM 生成结构化查询，cast 告诉 mypy 返回类型是 SearchQuery ──
         generated = cast(SearchQuery, await model.ainvoke(message_value, config))
         return {
             "queries": [generated.query],
@@ -95,8 +99,9 @@ async def retrieve(
         dict[str, list[Document]]: 包含 "retrieved_docs" 键的字典，值为检索到的文档列表。
     """
     # 创建检索器（根据配置自动选择 Elastic/Pinecone/MongoDB）
+    # with 上下文管理器：确保检索器使用完毕后自动关闭向量库连接，防止资源泄漏
     with retrieval.make_retriever(config) as retriever:
-        # 使用最新一条查询执行向量检索
+        # 使用最新一条查询执行向量检索（异步调用）
         response = await retriever.ainvoke(state.queries[-1], config)
         return {"retrieved_docs": response}
 
@@ -105,20 +110,24 @@ async def respond(
     state: State, *, config: RunnableConfig
 ) -> dict[str, list[BaseMessage]]:
     """调用 LLM 生成最终回答。"""
+    # ── 步骤1：从 config 解析配置（响应模型、系统提示词等）──
     configuration = Configuration.from_runnable_config(config)
-    # 构建响应生成的提示词模板：系统提示 + 消息历史
+
+    # ── 步骤2：构建提示词模板（系统提示 + 消息历史占位符）──
     prompt = ChatPromptTemplate.from_messages(
         [
             ("system", configuration.response_system_prompt),
             ("placeholder", "{messages}"),
         ]
     )
-    # 加载响应生成模型
+
+    # ── 步骤3：加载响应生成模型 ──
     model = load_chat_model(configuration.response_model)
 
-    # 将检索到的文档格式化为 XML 字符串，注入到 Prompt 中
+    # ── 步骤4：将检索到的文档格式化为 XML 字符串 ──
     retrieved_docs = format_docs(state.retrieved_docs)
-    # 填充模板变量：消息历史、检索文档、系统时间
+
+    # ── 步骤5：填充模板变量（消息历史、检索文档、系统时间）──
     message_value = await prompt.ainvoke(
         {
             "messages": state.messages,
@@ -127,9 +136,11 @@ async def respond(
         },
         config,
     )
-    # 调用 LLM 生成回答
+
+    # ── 步骤6：调用 LLM 生成最终回答 ──
     response = await model.ainvoke(message_value, config)
-    # 返回消息列表，会被追加到状态中的 messages（由 add_messages reducer 处理）
+
+    # ── 步骤7：返回消息列表，会被追加到状态中的 messages（由 add_messages reducer 处理）──
     return {"messages": [response]}
 
 

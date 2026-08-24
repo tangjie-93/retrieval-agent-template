@@ -176,22 +176,156 @@ MONGODB_URI="mongodb+srv://username:password@your-cluster-url.mongodb.net/?retry
 
 Pinecone 是托管的云原生向量数据库，可为 AI 应用提供长期记忆能力。
 
-配置步骤：
+#### 4.4.1 注册 Pinecone 账号
 
-1. 注册 Pinecone 账号。
-2. 登录后在 Pinecone 控制台生成 API Key。
-3. 创建 Serverless Index：
-   - 设置索引名称，例如 `example-index`。
-   - 根据嵌入模型设置维度，例如 OpenAI embeddings 通常为 `1536`。
-   - 相似度指标选择 `cosine`。
-   - 索引类型选择 `Serverless`。
-   - 选择云服务商和区域，例如 AWS `us-east-1`。
-4. 将 API Key 和索引名称写入 `.env`：
+1. 打开 Pinecone 控制台：https://app.pinecone.io/
+2. 使用邮箱、Google 或 GitHub 注册账号。
+3. 根据页面提示创建组织和项目。
+4. 选择合适的计划：
+   - `Starter`：免费入门，适合学习和原型验证，但有区域和额度限制。
+   - `Builder`：固定月费，额度更高，适合小型生产应用。
+   - `Standard trial`：试用标准计划能力，适合评估更大规模场景。
+5. 注册完成后进入 Pinecone Console。
+
+如果只是跑通本模板，优先选择 `Starter` 即可。
+
+#### 4.4.2 创建 API Key
+
+1. 登录 Pinecone Console。
+2. 进入左侧导航中的 `API Keys`。
+3. 点击创建 API Key。
+4. 复制生成的 key，并妥善保存。
+
+注意：
+
+- API Key 只应写入本地 `.env`，不要提交到 Git。
+- 如果 key 泄露，应立即在 Pinecone Console 中删除并重新生成。
+
+#### 4.4.3 创建 Serverless Index
+
+1. 在 Pinecone Console 中进入 `Indexes`。
+2. 点击创建新 index。
+3. 设置索引名称，例如：
+
+```text
+example-index
+```
+
+索引名称建议只使用小写字母、数字和连字符，例如 `retrieval-agent-demo`。
+
+4. 选择向量类型：
+
+```text
+Dense
+```
+
+5. 根据嵌入模型设置维度。
+
+本模板默认嵌入模型为：
+
+```yaml
+embedding_model: openai/text-embedding-3-small
+```
+
+OpenAI `text-embedding-3-small` 常用维度是 `1536`，因此 Pinecone index 的 dimension 通常设置为：
+
+```text
+1536
+```
+
+如果你更换了嵌入模型，必须同步修改 Pinecone index 的维度。向量维度不一致会导致写入失败。
+
+6. 相似度指标选择：
+
+```text
+cosine
+```
+
+7. 部署方式选择：
+
+```text
+Serverless
+```
+
+8. 选择云服务商和区域，例如：
+
+```text
+AWS / us-east-1
+```
+
+如果你使用免费或入门计划，控制台可能只允许选择部分区域，以实际页面为准。
+
+9. 创建 index 后，等待状态变为 ready。
+
+#### 4.4.4 写入 `.env`
+
+将 API Key 和索引名称写入 `.env`：
 
 ```env
 PINECONE_API_KEY=your-api-key
 PINECONE_INDEX_NAME=your-index-name
 ```
+
+同时确认检索器配置使用 Pinecone：
+
+```yaml
+retriever_provider: pinecone
+```
+
+如果该配置通过环境变量覆盖，请按项目实际配置方式设置为 `pinecone`。
+
+#### 4.4.5 用 Python SDK 创建索引的等价方式
+
+如果不想在控制台手动创建，也可以用 Python SDK 创建 Serverless Index。
+
+示例：
+
+```python
+from pinecone import Pinecone, ServerlessSpec
+
+pc = Pinecone(api_key="YOUR_API_KEY")
+
+pc.indexes.create(
+    name="example-index",
+    dimension=1536,
+    metric="cosine",
+    spec=ServerlessSpec(cloud="aws", region="us-east-1"),
+)
+```
+
+如果使用旧版 Pinecone SDK，创建索引的方法名可能不同。实际使用时以当前安装的 `pinecone` SDK 版本为准。
+
+#### 4.4.6 常见问题
+
+1. 维度不匹配。
+
+   现象：写入向量时报 dimension 相关错误。
+
+   处理：确认 embedding 模型输出维度和 Pinecone index dimension 一致。更换 embedding 模型后，通常需要重新创建 index 或重建数据。
+
+2. 索引名称写错。
+
+   现象：连接 Pinecone 成功，但查询或写入提示找不到 index。
+
+   处理：确认 `.env` 中的 `PINECONE_INDEX_NAME` 和控制台 index 名称完全一致。
+
+3. API Key 无效。
+
+   现象：认证失败或权限错误。
+
+   处理：重新在 Pinecone Console 中创建 API Key，并确认 `.env` 已重新加载。
+
+4. 区域不可选。
+
+   现象：控制台中看不到某些 cloud / region。
+
+   处理：不同计划可用区域可能不同，学习和原型阶段可以直接选择控制台允许的默认区域。
+
+5. 忘记切换 `retriever_provider`。
+
+   现象：`.env` 已配置 Pinecone，但应用仍然连接 Elasticsearch 或 MongoDB。
+
+   处理：确认运行配置中的 `retriever_provider` 已设置为 `pinecone`。
 
 ## 5. 配置语言模型
 

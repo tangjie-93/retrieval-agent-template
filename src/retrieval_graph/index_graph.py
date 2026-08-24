@@ -27,7 +27,10 @@ def ensure_docs_have_user_id(
         list[Document]: 带 user_id metadata 的新文档列表。
     """
     # 从配置中获取 user_id
-    user_id = config["configurable"]["user_id"]
+    # 原写法（直接取值，风格不一致，已注释保留）：
+    # user_id = config["configurable"]["user_id"]
+    # 统一写法（通过配置类解析，有类型推断，与 graph.py 保持一致）：
+    user_id = IndexConfiguration.from_runnable_config(config).user_id
     # 为每个文档的 metadata 注入 user_id，实现用户级数据隔离
     return [
         Document(

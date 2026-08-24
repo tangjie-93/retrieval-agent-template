@@ -2,10 +2,13 @@
 
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass, field, fields
 from typing import Annotated, Any, Literal, Type, TypeVar
 
 from langchain_core.runnables import RunnableConfig, ensure_config
+
+logger = logging.getLogger(__name__)
 
 from retrieval_graph import prompts
 '''
@@ -34,6 +37,37 @@ from retrieval_graph import prompts
   不能写成位置参数。
 '''
 
+def _log_config_params(cls_name: str, configurable: dict, matched: dict) -> None:
+    """打印 from_runnable_config 实际接收和匹配到的参数字段。
+
+    Args:
+        cls_name: 调用方类名（如 IndexConfiguration / Configuration）。
+        configurable: LangGraph 传入的原始 configurable 字典。
+        matched: 与当前类字段匹配上的参数子集。
+    """
+    # 打印原始接收到的全部 configurable 参数
+    logger.info(
+        "[%s.from_runnable_config] 原始 configurable 参数: %s",
+        cls_name,
+        configurable,
+    )
+    # 打印匹配成功的字段
+    logger.info(
+        "[%s.from_runnable_config] 匹配字段 (%d): %s",
+        cls_name,
+        len(matched),
+        matched,
+    )
+    # 打印被过滤掉的字段（如果有）
+    unmatched = set(configurable.keys()) - set(matched.keys())
+    if unmatched:
+        logger.info(
+            "[%s.from_runnable_config] 未匹配字段 (已忽略): %s",
+            cls_name,
+            unmatched,
+        )
+
+
 @dataclass(kw_only=True)
 class IndexConfiguration:
     """索引和检索操作的配置类。
@@ -61,7 +95,7 @@ class IndexConfiguration:
         Literal["elastic", "elastic-local", "pinecone", "mongodb"],
         {"__template_metadata__": {"kind": "retriever"}},
     ] = field(
-        default="elastic",
+        default="pinecone",
         metadata={
             "description": "The vector store provider to use for retrieval. Options are 'elastic', 'pinecone', or 'mongodb'."
         },
@@ -91,8 +125,11 @@ class IndexConfiguration:
         configurable = config.get("configurable") or {}
         # 获取当前类的所有可初始化字段名集合
         _fields = {f.name for f in fields(cls) if f.init}
-        # 只将 configurable 中与字段名匹配的参数传入构造函数
-        return cls(**{k: v for k, v in configurable.items() if k in _fields})
+        # 筛选出与当前类字段匹配的参数
+        matched = {k: v for k, v in configurable.items() if k in _fields}
+        # 打印日志：实际接收和匹配到的参数
+        _log_config_params(cls.__name__, configurable, matched)
+        return cls(**matched)
 
 
 # 泛型类型变量，绑定到 IndexConfiguration，用于 from_runnable_config 的返回类型
@@ -111,7 +148,7 @@ class Configuration(IndexConfiguration):
 
     # 响应生成的语言模型，格式为 provider/model-name
     response_model: Annotated[str, {"__template_metadata__": {"kind": "llm"}}] = field(
-        default="anthropic/claude-3-5-sonnet-20240620",
+        default="openai/gpt-5.5",
         metadata={
             "description": "The language model used for generating responses. Should be in the form: provider/model-name."
         },
@@ -127,7 +164,7 @@ class Configuration(IndexConfiguration):
 
     # 查询生成的语言模型（通常用更轻量的模型以降低成本），格式为 provider/model-name
     query_model: Annotated[str, {"__template_metadata__": {"kind": "llm"}}] = field(
-        default="anthropic/claude-3-haiku-20240307",
+        default="openai/gpt-5.5",
         metadata={
             "description": "The language model used for processing and refining queries. Should be in the form: provider/model-name."
         },
