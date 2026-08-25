@@ -175,7 +175,19 @@ python doc\langchain-ecosystem\examples\04_rag_pipeline.py
 ## 10. 本模块自测
 
 1. RAG 的完整链路是什么？
+    + 文档加载 -> 文本切分 -> Embedding -> 向量库 -> Retriever -> Prompt -> LLM -> Answer
 2. `Document.metadata` 为什么重要？
+    + 用于权限过滤、文档类型分类、检索结果排序。
+    + 没有 metadata 会导致检索结果不准确。
 3. chunk size 和 chunk overlap 会影响什么？
+    + chunk size 太大：检索不精准。
+    + chunk size 太小：语义不完整。
+    + overlap 太小：上下文断裂。
+    + overlap 太大：重复内容过多。
 4. Retriever 和 Vector Store 是什么关系？
+    + Retriever 从 Vector Store 读取向量。
+    + Vector Store 存储向量，支持相似度搜索。
+    + 没有 Retriever 无法检索。
 5. 检索为空时系统应该怎么回答？
+    + 可以返回“没有相关文档”或“无法回答”。
+    + 也可以根据上下文生成默认答案。
