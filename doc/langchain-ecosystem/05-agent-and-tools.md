@@ -158,7 +158,16 @@ Agentic RAG：
 
 ## 8. 可运行 Demo
 
-完成 [示例统一准备](./examples/README.md) 后运行：
+完成 [示例统一准备](./examples/README.md) 后，先运行离线单概念脚本：
+
+```powershell
+python doc\langchain-ecosystem\examples\05_agents\tool_definition.py
+python doc\langchain-ecosystem\examples\05_agents\tool_schema.py
+python doc\langchain-ecosystem\examples\05_agents\agent_loop.py
+python doc\langchain-ecosystem\examples\05_agents\agentic_rag.py
+```
+
+再观察真实模型的工具选择：
 
 ~~~powershell
 python doc\langchain-ecosystem\examples\05_agent_tools.py

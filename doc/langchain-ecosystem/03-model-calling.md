@@ -88,7 +88,16 @@ RAG 的检索依赖向量相似度。Embedding 质量不好，检索结果就不
 
 ## 7. 可运行 Demo
 
-完成 [示例统一准备](./examples/README.md) 后运行：
+完成 [示例统一准备](./examples/README.md) 后，可以按概念分别运行：
+
+```powershell
+python doc\langchain-ecosystem\examples\03_models\chat_model.py
+python doc\langchain-ecosystem\examples\03_models\stream_and_batch.py
+python doc\langchain-ecosystem\examples\03_models\embeddings.py
+python doc\langchain-ecosystem\examples\03_models\model_selection.py
+```
+
+章节综合 Demo：
 
 ~~~powershell
 python doc\langchain-ecosystem\examples\03_model_calling.py
@@ -100,7 +109,12 @@ python doc\langchain-ecosystem\examples\03_model_calling.py
 ## 8. 本模块自测
 
 1. Chat Model 和 Embedding Model 有什么区别？
+    + Chat Model 是聊天模型封装，Embedding Model 是文本向量模型封装。
 2. 为什么 RAG 入库和查询最好使用同一个 embedding 模型？
+    + 不同的 embedding 模型会生成不同的向量，导致检索结果不准确。
 3. temperature 对回答有什么影响？
+    + temperature 控制发散程度，低一些回答更确定，高一些回答更开放。
 4. streaming 适合什么场景？
+    + streaming 适合聊天和长答案。
 5. 为什么要记录模型版本和参数？
+    + 记录模型版本和参数可以方便调试和回滚。

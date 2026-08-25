@@ -124,10 +124,19 @@ Feedback 是用户或人工评审对回答的反馈。
 
 ## 7. 可运行 Demo
 
-完成 [示例统一准备](./examples/README.md)，并在 `.env` 设置
-`LANGSMITH_TRACING=true`、`LANGSMITH_API_KEY` 后运行：
+完成 [示例统一准备](./examples/README.md)。评估与监控概念默认可离线运行，Dataset 和 Feedback 只有传入 `--write` 才写入远端：
+
+```powershell
+python doc\langchain-ecosystem\examples\07_langsmith\dataset.py
+python doc\langchain-ecosystem\examples\07_langsmith\evaluation.py
+python doc\langchain-ecosystem\examples\07_langsmith\feedback.py
+python doc\langchain-ecosystem\examples\07_langsmith\monitoring_metrics.py
+```
+
+配置 `LANGSMITH_TRACING=true`、`LANGSMITH_API_KEY` 后运行 Trace 示例：
 
 ~~~powershell
+python doc\langchain-ecosystem\examples\07_langsmith\trace.py
 python doc\langchain-ecosystem\examples\07_langsmith.py
 ~~~
 

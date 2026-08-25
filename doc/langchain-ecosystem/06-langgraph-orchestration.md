@@ -155,7 +155,18 @@ START
 
 ## 9. 可运行 Demo
 
-完成 [示例统一准备](./examples/README.md) 后运行：
+完成 [示例统一准备](./examples/README.md) 后，分别运行以下离线图：
+
+```powershell
+python doc\langchain-ecosystem\examples\06_langgraph\state_node_edge.py
+python doc\langchain-ecosystem\examples\06_langgraph\conditional_edges.py
+python doc\langchain-ecosystem\examples\06_langgraph\bounded_loop.py
+python doc\langchain-ecosystem\examples\06_langgraph\checkpointer.py
+python doc\langchain-ecosystem\examples\06_langgraph\human_in_the_loop.py
+python doc\langchain-ecosystem\examples\06_langgraph\enterprise_rag_graph.py
+```
+
+联网模型节点综合 Demo：
 
 ~~~powershell
 python doc\langchain-ecosystem\examples\06_langgraph.py

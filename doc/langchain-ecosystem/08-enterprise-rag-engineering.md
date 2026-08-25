@@ -126,7 +126,17 @@ Agent 和 RAG 很容易因为多次检索、多次模型调用导致成本和响
 
 ## 7. 可运行 Demo
 
-完成 [示例统一准备](./examples/README.md) 后运行：
+完成 [示例统一准备](./examples/README.md) 后，先分别运行工程能力示例：
+
+```powershell
+python doc\langchain-ecosystem\examples\08_enterprise\access_control.py
+python doc\langchain-ecosystem\examples\08_enterprise\knowledge_updates.py
+python doc\langchain-ecosystem\examples\08_enterprise\citations.py
+python doc\langchain-ecosystem\examples\08_enterprise\cost_and_latency.py
+python doc\langchain-ecosystem\examples\08_enterprise\fallbacks.py
+```
+
+再运行联网综合 RAG：
 
 ~~~powershell
 python doc\langchain-ecosystem\examples\08_enterprise_rag.py

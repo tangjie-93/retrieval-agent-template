@@ -215,9 +215,19 @@ tool: 《员工休假制度》第 3 条：工作满一年后，每年享有 5 �
 {'risk_level': '高', 'needs_human_review': True, 'source_ids': ['policy-expense-008']}
 ```
 
-### OpenAI ChatGPT 实战 Demo
+### 配套单概念与 OpenAI 综合 Demo
 
-完成 [示例统一准备](./examples/README.md) 后运行：
+完整示例索引见 [示例统一准备](./examples/README.md)。基础对象可分别离线运行：
+
+```powershell
+python doc\langchain-ecosystem\examples\02_core\messages.py
+python doc\langchain-ecosystem\examples\02_core\prompts.py
+python doc\langchain-ecosystem\examples\02_core\runnables.py
+python doc\langchain-ecosystem\examples\02_core\tools.py
+python doc\langchain-ecosystem\examples\02_core\output_parsers.py
+```
+
+随后运行联网综合 Demo：
 
 ~~~powershell
 python doc\langchain-ecosystem\examples\02_core_chain.py
@@ -238,19 +248,19 @@ python doc\langchain-ecosystem\examples\02_core_chain.py
 ## 8. 本模块自测
 
 1. Message 里的 system、human、ai、tool 分别代表什么？
-+ system：系统消息，用于设置上下文。
-+ human：用户消息，用于输入用户问题。
-+ ai：模型消息，用于输出模型回答。
-+ tool：工具调用消息，用于调用外部工具。
+    + system：系统消息，用于设置上下文。
+    + human：用户消息，用于输入用户问题。
+    + ai：模型消息，用于输出模型回答。
+    + tool：工具调用消息，用于调用外部工具。
 2. PromptTemplate 解决什么问题？
-+ 格式化消息，将变量插入到模板中。
-+ 不调用模型，只格式化消息。
+    + 格式化消息，将变量插入到模板中。
+    + 不调用模型，只格式化消息。
 3. Runnable 的 `.invoke()`、`.stream()`、`.batch()` 有什么区别？
-+ `.invoke()`：同步调用，返回一个结果。
-+ `.stream()`：异步调用，返回一个可迭代对象，每次迭代返回一个结果。
-+ `.batch()`：批量调用，返回一个列表，每个元素对应一个输入。
+    + `.invoke()`：同步调用，返回一个结果。
+    + `.stream()`：异步调用，返回一个可迭代对象，每次迭代返回一个结果。
+    + `.batch()`：批量调用，返回一个列表，每个元素对应一个输入。
 4. Tool 的描述为什么重要？
-+ 用于模型决定怎样调用工具。
-+ 说明了工具的功能、参数和返回值。
+    + 用于模型决定怎样调用工具。
+    + 说明了工具的功能、参数和返回值。
 5. OutputParser 失败时应该怎么处理？
-+ 可以捕获异常，记录日志，或者返回默认值。
+    + 可以捕获异常，记录日志，或者返回默认值。

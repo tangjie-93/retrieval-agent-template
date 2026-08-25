@@ -152,7 +152,18 @@ Context 拼接是把检索到的文档片段整理后放进 Prompt。
 
 ## 9. 可运行 Demo
 
-完成 [示例统一准备](./examples/README.md) 后运行：
+完成 [示例统一准备](./examples/README.md) 后，先运行离线单概念脚本：
+
+```powershell
+python doc\langchain-ecosystem\examples\04_rag\documents.py
+python doc\langchain-ecosystem\examples\04_rag\loaders.py
+python doc\langchain-ecosystem\examples\04_rag\text_splitters.py
+python doc\langchain-ecosystem\examples\04_rag\vector_store.py
+python doc\langchain-ecosystem\examples\04_rag\retrievers.py
+python doc\langchain-ecosystem\examples\04_rag\context_building.py
+```
+
+再运行联网完整 RAG：
 
 ~~~powershell
 python doc\langchain-ecosystem\examples\04_rag_pipeline.py

@@ -78,7 +78,13 @@ LangChain 生态 = 核心接口 + 应用框架 + 集成包 + 编排框架 + 观�
 
 ## 8. 可运行 Demo
 
-先完成 [示例统一准备](./examples/README.md)，再运行：
+先完成 [示例统一准备](./examples/README.md)。单概念脚本用于离线观察各层的数据流：
+
+```powershell
+python doc\langchain-ecosystem\examples\01_ecosystem\ecosystem_layers.py
+```
+
+再运行联网综合 Demo：
 
 ~~~powershell
 python doc\langchain-ecosystem\examples\01_chat_basics.py
