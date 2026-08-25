@@ -100,7 +100,7 @@ async def retrieve(
     """
     # 创建检索器（根据配置自动选择 Elastic/Pinecone/MongoDB）
     # with 上下文管理器：确保检索器使用完毕后自动关闭向量库连接，防止资源泄漏
-    with retrieval.make_retriever(config) as retriever:
+    async with retrieval.make_retriever(config) as retriever:
         # 使用最新一条查询执行向量检索（异步调用）
         response = await retriever.ainvoke(state.queries[-1], config)
         return {"retrieved_docs": response}

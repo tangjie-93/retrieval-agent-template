@@ -1770,50 +1770,25 @@ wheels = [
 
 [[package]]
 name = "langgraph-cli"
-version = "0.4.7"
+version = "0.4.31"
 source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "python_full_version < '3.11'",
-]
-dependencies = [
-    { name = "click" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/aa/73/c581ff48ea039404619f56e0628eaa0e5327d9bee43ff2d3ae579b231d06/langgraph_cli-0.4.7.tar.gz", hash = "sha256:51dc5c7bfd0ce957162facea5ef93ffe9778e8d9ec993354f19aec9dd0161470", size = 801549, upload-time = "2025-11-03T23:45:34.668Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/16/b6/0d2d0ea664a74fa1b58aaf5e86f6cfa68a4173e601d5aef5f6fc2d83f99e/langgraph_cli-0.4.7-py3-none-any.whl", hash = "sha256:c24e1593c2cdffb658841999eccf71d8bd73025105c727ebcad7fafe35c983ab", size = 39482, upload-time = "2025-11-03T23:45:33.375Z" },
-]
-
-[package.optional-dependencies]
-inmem = [
-    { name = "python-dotenv" },
-]
-
-[[package]]
-name = "langgraph-cli"
-version = "0.4.30"
-source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "python_full_version >= '3.14'",
-    "python_full_version == '3.13.*'",
-    "python_full_version == '3.12.*'",
-    "python_full_version == '3.11.*'",
-]
 dependencies = [
     { name = "click" },
     { name = "httpx" },
-    { name = "langgraph-sdk" },
+    { name = "langgraph-sdk", marker = "python_full_version >= '3.11'" },
     { name = "pathspec" },
     { name = "python-dotenv" },
+    { name = "tomli", marker = "python_full_version < '3.11'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/f0/27/4b6a0f00c804f0b0831f741c0607b46a4cbddff14d1eab6bbd4ce5820837/langgraph_cli-0.4.30.tar.gz", hash = "sha256:4948fdc77ff45fc5ef3d8330d17bbecfcb26cd9c4d3a4f00da84a41a0226cd72", size = 1046771, upload-time = "2026-06-16T19:46:27.949Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/51/47/b436abcd95cdc0685e662b7b6670566fed6f96a6ebeb130ad20b9781cd45/langgraph_cli-0.4.31.tar.gz", hash = "sha256:b35951d901bc8bcb998be6715ee3512a545182ddbb8f72702d0558fe39cea505", size = 1046834, upload-time = "2026-07-10T22:57:50.749Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/3e/b6/94cbd2ba0820caae203a915272394c576a21ab4a56dfbc93724dc8cd8e2b/langgraph_cli-0.4.30-py3-none-any.whl", hash = "sha256:9c577750c57da1a0e3407e8b83e5a0d7eaa80685fe99d95aa7f9bf0e1e73ca92", size = 82061, upload-time = "2026-06-16T19:46:26.873Z" },
+    { url = "https://files.pythonhosted.org/packages/8b/73/afe77f0c81f43b35e41dc90e5bde8c25f6518811258ee5bca1f953e41186/langgraph_cli-0.4.31-py3-none-any.whl", hash = "sha256:111da6269d6c9d8606b19264caaa8d5e6b98bb6684233853a5d55489a6e62496", size = 82646, upload-time = "2026-07-10T22:57:49.425Z" },
 ]
 
 [package.optional-dependencies]
 inmem = [
-    { name = "langgraph-api" },
-    { name = "langgraph-runtime-inmem" },
+    { name = "langgraph-api", marker = "python_full_version >= '3.11'" },
+    { name = "langgraph-runtime-inmem", marker = "python_full_version >= '3.11'" },
 ]
 
 [[package]]
@@ -3644,8 +3619,7 @@ dev = [
 [package.dev-dependencies]
 dev = [
     { name = "anyio" },
-    { name = "langgraph-cli", version = "0.4.7", source = { registry = "https://pypi.org/simple" }, extra = ["inmem"], marker = "python_full_version < '3.11'" },
-    { name = "langgraph-cli", version = "0.4.30", source = { registry = "https://pypi.org/simple" }, extra = ["inmem"], marker = "python_full_version >= '3.11'" },
+    { name = "langgraph-cli", extra = ["inmem"] },
     { name = "mypy" },
     { name = "pytest" },
 ]
@@ -3671,7 +3645,7 @@ provides-extras = ["dev"]
 [package.metadata.requires-dev]
 dev = [
     { name = "anyio", specifier = ">=4.7.0" },
-    { name = "langgraph-cli", extras = ["inmem"], specifier = ">=0.1.71" },
+    { name = "langgraph-cli", extras = ["inmem"], specifier = ">=0.4.31" },
     { name = "mypy", specifier = ">=1.11.1,<2.0.0" },
     { name = "pytest", specifier = ">=9.0.3" },
 ]

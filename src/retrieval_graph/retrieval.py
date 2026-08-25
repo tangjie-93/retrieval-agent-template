@@ -7,8 +7,9 @@
 """
 
 import os
-from contextlib import contextmanager
-from typing import Generator
+from asyncio import to_thread
+from contextlib import asynccontextmanager, contextmanager
+from typing import AsyncGenerator, Generator
 
 from langchain_core.embeddings import Embeddings
 from langchain_core.runnables import RunnableConfig
@@ -130,7 +131,7 @@ def make_mongodb_retriever(
 
 
 @contextmanager
-def make_retriever(
+def make_retriever_sync(
     config: RunnableConfig,
 ) -> Generator[VectorStoreRetriever, None, None]:
     """根据当前配置创建检索器。
@@ -173,3 +174,27 @@ def make_retriever(
                 f"Expected one of: {', '.join(Configuration.__annotations__['retriever_provider'].__args__)}\n"
                 f"Got: {configuration.retriever_provider}"
             )
+
+
+@asynccontextmanager
+async def make_retriever(
+    config: RunnableConfig,
+) -> AsyncGenerator[VectorStoreRetriever, None]:
+    """Create a retriever without blocking the ASGI event loop.
+
+    Vector-store SDK constructors can establish synchronous network connections.
+    Run their context-manager lifecycle in a worker thread while callers retain
+    the retriever's native async ``ainvoke`` and ``aadd_documents`` methods.
+    """
+    retriever_context = make_retriever_sync(config)
+    retriever = await to_thread(retriever_context.__enter__)
+    try:
+        yield retriever
+    except BaseException as error:
+        suppress = await to_thread(
+            retriever_context.__exit__, type(error), error, error.__traceback__
+        )
+        if not suppress:
+            raise
+    else:
+        await to_thread(retriever_context.__exit__, None, None, None)

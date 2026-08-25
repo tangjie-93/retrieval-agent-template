@@ -79,7 +79,21 @@ LangChain 生态 = 核心接口 + 应用框架 + 集成包 + 编排框架 + 观�
 ## 8. 自测问题
 
 1. `langchain_core` 和 `langchain` 是什么关系？
++ `langchain_core` 是基础接口，`langchain` 是应用开发框架。
++ `langchain` 依赖 `langchain_core`，定义了消息、Prompt、Runnable 等基础类型。
 2. 为什么模型集成包要拆出去？
++ 模型集成包负责对接模型，每个模型都有自己的 API。
++ 模型集成包需要维护自己的依赖，不能和主框架混在一起。
++ 模型集成包需要支持不同的模型，不能和主框架绑定。
 3. 什么场景必须考虑 LangGraph？
++ 复杂的 Agent 需要状态图和可恢复流程。
++ 需要循环、分支、条件判断。
++ 需要并行执行多个任务。
 4. LangSmith 是写业务逻辑的，还是看运行过程的？
++ LangSmith 是看运行过程的，不是写业务逻辑。
 5. 一个企业 RAG 至少会涉及哪几层？
++ 核心协议层：`langchain_core`
++ 应用开发层：`langchain`
++ 集成层：`langchain_openai`、`langchain_community` 等
++ 编排层：`langgraph`
++ 平台层：`langsmith`

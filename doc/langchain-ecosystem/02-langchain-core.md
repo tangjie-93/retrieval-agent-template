@@ -108,7 +108,123 @@ OutputParser 用来把模型输出解析成结构化数据。
 3. 字段没有默认值。
 4. 解析失败后没有重试或降级。
 
-## 7. 本模块自测
+## 7. 可运行 Demo
+
+以下示例只依赖 `langchain-core`，不需要模型 API Key。先安装依赖：
+
+```bash
+pip install langchain-core
+```
+
+将下面代码保存为 `langchain_core_demo.py` 后执行 `python langchain_core_demo.py`。它覆盖 Message、Prompt、Runnable、Tool 和 OutputParser 五个核心对象。
+
+```python
+from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, ToolMessage
+from langchain_core.output_parsers import JsonOutputParser
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.runnables import RunnableLambda
+from langchain_core.tools import tool
+
+
+@tool
+def search_policy(query: str) -> str:
+    """按关键词搜索企业制度，并返回最相关的制度摘要。"""
+    policies = {
+        "年假": "《员工休假制度》第 3 条：工作满一年后，每年享有 5 天年假。",
+        "报销": "《费用报销制度》第 8 条：单笔超过 5000 元需要部门负责人审批。",
+    }
+    return policies.get(query, "未找到相关制度。")
+
+
+def main() -> None:
+    # 1. Message：ToolMessage 的 tool_call_id 对应 AIMessage 的工具调用 ID。
+    messages = [
+        SystemMessage(content="你是企业知识库助手。"),
+        HumanMessage(content="年假有几天？"),
+        AIMessage(
+            content="",
+            tool_calls=[
+                {"name": "search_policy", "args": {"query": "年假"}, "id": "call_001"}
+            ],
+        ),
+        ToolMessage(
+            content=search_policy.invoke({"query": "年假"}),
+            tool_call_id="call_001",
+        ),
+    ]
+    print("=== Message ===")
+    for message in messages:
+        print(f"{message.type}: {message.content}")
+
+    # 2. Prompt：invoke 只格式化消息，不会调用模型。
+    prompt = ChatPromptTemplate.from_messages([
+        ("system", "你是企业知识库助手，只根据上下文回答。"),
+        ("human", "问题：{question}\n\n上下文：{context}"),
+    ])
+    prompt_value = prompt.invoke({
+        "question": "年假有几天？",
+        "context": search_policy.invoke({"query": "年假"}),
+    })
+    print("\n=== Prompt ===")
+    for message in prompt_value.to_messages():
+        print(f"[{message.type}] {message.content}")
+
+    # 3. Runnable：管道将前一步的输出作为后一步的输入。
+    retrieve = RunnableLambda(lambda query: search_policy.invoke({"query": query}))
+    answer = RunnableLambda(lambda context: f"制度说明：{context}")
+    chain = retrieve | answer
+    print("\n=== Runnable ===")
+    print(chain.invoke("年假"))
+    print(chain.batch(["年假", "报销"]))
+    print(list(chain.stream("报销")))
+
+    # 4. Tool：名称、说明和参数 schema 供模型决定怎样调用工具。
+    print("\n=== Tool ===")
+    print(search_policy.name)
+    print(search_policy.args_schema.model_json_schema()["properties"])
+
+    # 5. OutputParser：把模型返回的 JSON 文本转成 Python 字典。
+    parser = JsonOutputParser()
+    result = parser.invoke(
+        '{"risk_level": "高", "needs_human_review": true, '
+        '"source_ids": ["policy-expense-008"]}'
+    )
+    print("\n=== OutputParser ===")
+    print(result)
+
+
+if __name__ == "__main__":
+    main()
+```
+
+关键输出如下（不同版本中参数 schema 的字段顺序可能不同）：
+
+```text
+=== Message ===
+system: 你是企业知识库助手。
+human: 年假有几天？
+ai:
+tool: 《员工休假制度》第 3 条：工作满一年后，每年享有 5 天年假。
+
+=== Runnable ===
+制度说明：《员工休假制度》第 3 条：工作满一年后，每年享有 5 天年假。
+['制度说明：《员工休假制度》第 3 条：工作满一年后，每年享有 5 天年假。', '制度说明：《费用报销制度》第 8 条：单笔超过 5000 元需要部门负责人审批。']
+['制度说明：《费用报销制度》第 8 条：单笔超过 5000 元需要部门负责人审批。']
+
+=== OutputParser ===
+{'risk_level': '高', 'needs_human_review': True, 'source_ids': ['policy-expense-008']}
+```
+
+接入真实模型时，只需把模拟的 `answer` 替换为聊天模型，并在末尾追加解析器：
+
+```python
+# from langchain_openai import ChatOpenAI
+# llm = ChatOpenAI(model="gpt-4o-mini")
+# rag_chain = prompt | llm | JsonOutputParser()
+# result = rag_chain.invoke({"question": "年假有几天？", "context": "..."})
+```
+
+## 8. 本模块自测
 
 1. Message 里的 system、human、ai、tool 分别代表什么？
 2. PromptTemplate 解决什么问题？

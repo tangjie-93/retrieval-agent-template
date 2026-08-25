@@ -58,7 +58,7 @@ async def index_docs(
     if not config:
         raise ValueError("Configuration required to run index_docs.")
     # 创建检索器（根据配置自动选择 Elastic/Pinecone/MongoDB）
-    with retrieval.make_retriever(config) as retriever:
+    async with retrieval.make_retriever(config) as retriever:
         # 为文档注入 user_id metadata
         stamped_docs = ensure_docs_have_user_id(state.docs, config)
 
