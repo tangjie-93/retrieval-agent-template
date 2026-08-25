@@ -86,7 +86,18 @@ RAG 的检索依赖向量相似度。Embedding 质量不好，检索结果就不
 4. 没有处理限流、超时、网络错误。
 5. 只关注生成模型，不关注 embedding 模型。
 
-## 7. 本模块自测
+## 7. 可运行 Demo
+
+完成 [示例统一准备](./examples/README.md) 后运行：
+
+~~~powershell
+python doc\langchain-ecosystem\examples\03_model_calling.py
+~~~
+
+该脚本通过 `ChatOpenAI` 调用 OpenAI ChatGPT，并依次演示 `.invoke()`、`.stream()`、
+`.batch()` 和 `OpenAIEmbeddings.embed_query()`。
+
+## 8. 本模块自测
 
 1. Chat Model 和 Embedding Model 有什么区别？
 2. 为什么 RAG 入库和查询最好使用同一个 embedding 模型？

@@ -11,6 +11,17 @@
 3. 能写最小代码例子的，就写一个。
 4. 答不上来的问题，回到对应专题文档复习。
 
+### 动手验收
+
+完成 [示例统一准备](./examples/README.md)，然后逐一运行 examples/01 至
+examples/08 的脚本。验收时至少确认：
+
+1. 01_chat_basics.py 输出一段 ChatGPT 中文回答。
+2. 04_rag_pipeline.py 先打印检索到的来源文本，再打印带 [source] 的回答。
+3. 05_agent_tools.py 能得到基于工具返回的年假答案。
+4. 06_langgraph.py 能从 LangGraph 的最终 State 取到模型回答。
+5. 设置 LangSmith 配置后，07_langsmith.py 的调用可在 LangSmith 项目中查询到。
+
 ## 2. 生态分层
 
 1. `langchain_core` 和 `langchain` 有什么区别？

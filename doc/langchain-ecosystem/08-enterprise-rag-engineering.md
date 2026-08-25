@@ -124,7 +124,18 @@ Agent 和 RAG 很容易因为多次检索、多次模型调用导致成本和响
 4. 解析失败：重试或走降级解析。
 5. 权限不足：明确拒绝，不把内容给模型。
 
-## 7. 本模块自测
+## 7. 可运行 Demo
+
+完成 [示例统一准备](./examples/README.md) 后运行：
+
+~~~powershell
+python doc\langchain-ecosystem\examples\08_enterprise_rag.py
+~~~
+
+该脚本先按角色过滤可访问文档，再使用 OpenAI Embeddings 检索，最后由
+`ChatOpenAI` 调用 ChatGPT 回答，并保留文档来源标签。
+
+## 8. 本模块自测
 
 1. 为什么权限过滤不能只靠前端？
 2. 文档更新时为什么要删除旧 chunk？

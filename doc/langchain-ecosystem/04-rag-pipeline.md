@@ -150,7 +150,18 @@ Context 拼接是把检索到的文档片段整理后放进 Prompt。
 5. 答案带引用来源。
 6. 至少准备 5 个测试问题。
 
-## 9. 本模块自测
+## 9. 可运行 Demo
+
+完成 [示例统一准备](./examples/README.md) 后运行：
+
+~~~powershell
+python doc\langchain-ecosystem\examples\04_rag_pipeline.py
+~~~
+
+该脚本会用 OpenAI Embeddings 构建内存向量库、检索制度片段，再由
+`ChatOpenAI` 调用 ChatGPT 基于上下文生成带来源标记的答案。
+
+## 10. 本模块自测
 
 1. RAG 的完整链路是什么？
 2. `Document.metadata` 为什么重要？

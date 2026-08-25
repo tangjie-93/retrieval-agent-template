@@ -110,7 +110,7 @@ OutputParser 用来把模型输出解析成结构化数据。
 
 ## 7. 可运行 Demo
 
-以下示例只依赖 `langchain-core`，不需要模型 API Key。先安装依赖：
+下面代码用于离线理解基础对象；要运行实际调用 OpenAI ChatGPT 的完整版本，请使用本节末尾链接的 `02_core_chain.py`。先安装依赖：
 
 ```bash
 pip install langchain-core
@@ -215,7 +215,18 @@ tool: 《员工休假制度》第 3 条：工作满一年后，每年享有 5 �
 {'risk_level': '高', 'needs_human_review': True, 'source_ids': ['policy-expense-008']}
 ```
 
-接入真实模型时，只需把模拟的 `answer` 替换为聊天模型，并在末尾追加解析器：
+### OpenAI ChatGPT 实战 Demo
+
+完成 [示例统一准备](./examples/README.md) 后运行：
+
+~~~powershell
+python doc\langchain-ecosystem\examples\02_core_chain.py
+~~~
+
+该脚本以 `ChatOpenAI` 调用 ChatGPT，展示 `SystemMessage`、`HumanMessage`、
+`ChatPromptTemplate | ChatOpenAI` 管道，以及 Pydantic 结构化输出。
+
+接入真实模型的最小写法如下：
 
 ```python
 # from langchain_openai import ChatOpenAI
@@ -227,7 +238,19 @@ tool: 《员工休假制度》第 3 条：工作满一年后，每年享有 5 �
 ## 8. 本模块自测
 
 1. Message 里的 system、human、ai、tool 分别代表什么？
++ system：系统消息，用于设置上下文。
++ human：用户消息，用于输入用户问题。
++ ai：模型消息，用于输出模型回答。
++ tool：工具调用消息，用于调用外部工具。
 2. PromptTemplate 解决什么问题？
++ 格式化消息，将变量插入到模板中。
++ 不调用模型，只格式化消息。
 3. Runnable 的 `.invoke()`、`.stream()`、`.batch()` 有什么区别？
++ `.invoke()`：同步调用，返回一个结果。
++ `.stream()`：异步调用，返回一个可迭代对象，每次迭代返回一个结果。
++ `.batch()`：批量调用，返回一个列表，每个元素对应一个输入。
 4. Tool 的描述为什么重要？
++ 用于模型决定怎样调用工具。
++ 说明了工具的功能、参数和返回值。
 5. OutputParser 失败时应该怎么处理？
++ 可以捕获异常，记录日志，或者返回默认值。

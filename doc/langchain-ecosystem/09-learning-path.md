@@ -4,6 +4,23 @@
 
 这份路线帮助你从“知道名词”走到“能做一个企业 RAG 原型，并知道怎么演进到 Agent”。
 
+### 配套可运行 Demo
+
+完成 [示例统一准备](./examples/README.md) 后，按下面顺序运行。所有生成步骤都通过
+ChatOpenAI 调用 OpenAI ChatGPT：
+
+~~~powershell
+python doc\langchain-ecosystem\examples\01_chat_basics.py
+python doc\langchain-ecosystem\examples\02_core_chain.py
+python doc\langchain-ecosystem\examples\03_model_calling.py
+python doc\langchain-ecosystem\examples\04_rag_pipeline.py
+python doc\langchain-ecosystem\examples\05_agent_tools.py
+python doc\langchain-ecosystem\examples\06_langgraph.py
+python doc\langchain-ecosystem\examples\08_enterprise_rag.py
+~~~
+
+最后配置 LangSmith 环境变量，再运行 07_langsmith.py 验证 trace 是否出现。
+
 ## 2. 阶段一：先跑通普通 RAG
 
 目标：

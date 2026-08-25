@@ -67,9 +67,15 @@ langchain_core
 9. [学习和实践路径](./langchain-ecosystem/09-learning-path.md)
 10. [自测清单](./langchain-ecosystem/10-self-check.md)
 
-## 4. 最常见组合
+## 4. 先运行 Demo
 
-### 4.1 基础 RAG
+不要只按顺序读理论。每篇 01-08 文档都有对应的可执行入口，统一说明见
+[examples/README.md](./examples/README.md)。所有生成类示例都用
+`ChatOpenAI` 调用 OpenAI ChatGPT，需要先配置 `OPENAI_API_KEY`。
+
+## 5. 最常见组合
+
+### 5.1 基础 RAG
 
 ```text
 langchain_core
@@ -81,7 +87,7 @@ langchain_text_splitters
 
 适合：企业知识库问答、文档问答、FAQ 助手、简单检索增强生成。
 
-### 4.2 复杂 RAG Agent
+### 5.2 复杂 RAG Agent
 
 ```text
 langchain_core
@@ -94,7 +100,7 @@ langsmith
 
 适合：多轮任务、查询改写、多路检索、答案自检、人工审批、可恢复流程。
 
-### 4.3 上线生产
+### 5.3 上线生产
 
 ```text
 langsmith
@@ -107,7 +113,7 @@ Prompt 版本管理
 
 生产环境不要只看“本地问了几个问题，感觉还行”。企业 RAG 和 Agent 必须能追踪、能评估、能复盘。
 
-## 5. 核心分工
+## 6. 核心分工
 
 | 问题 | 主要看谁 |
 |---|---|
@@ -121,7 +127,7 @@ Prompt 版本管理
 | 我要做评估集和回归测试 | `langsmith` |
 | 我要看线上成本和延迟 | `langsmith` |
 
-## 6. 推荐学习路线
+## 7. 推荐学习路线
 
 第一阶段：先搞懂普通 RAG。
 
@@ -153,7 +159,7 @@ State -> Node -> Edge -> Conditional Edge -> Checkpointer -> Human-in-the-loop
 Trace -> Dataset -> Evaluation -> Feedback -> Monitoring
 ```
 
-## 7. 一句话总结
+## 8. 一句话总结
 
 ```text
 先用 LangChain 跑通 RAG
@@ -161,7 +167,7 @@ Trace -> Dataset -> Evaluation -> Feedback -> Monitoring
 最后在流程复杂时引入 LangGraph
 ```
 
-## 8. 官方资料
+## 9. 官方资料
 
 - LangChain Python Overview: https://docs.langchain.com/oss/python/langchain/overview
 - LangGraph Overview: https://docs.langchain.com/oss/python/langgraph/overview

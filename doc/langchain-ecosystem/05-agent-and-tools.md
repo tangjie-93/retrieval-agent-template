@@ -156,7 +156,18 @@ Agentic RAG：
 6. 没有记录中间步骤。
 7. Agent 多做了很多步骤，但答案没有变好。
 
-## 8. 本模块自测
+## 8. 可运行 Demo
+
+完成 [示例统一准备](./examples/README.md) 后运行：
+
+~~~powershell
+python doc\langchain-ecosystem\examples\05_agent_tools.py
+~~~
+
+该脚本以 `create_agent` 创建 Agent，由 OpenAI ChatGPT 自主选择
+`search_policy`，读取工具结果后生成最终回答。
+
+## 9. 本模块自测
 
 1. 普通 RAG 和 Agentic RAG 有什么区别？
 2. Tool 的名称和描述为什么重要？

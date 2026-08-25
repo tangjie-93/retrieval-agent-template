@@ -76,7 +76,17 @@ LangChain 生态 = 核心接口 + 应用框架 + 集成包 + 编排框架 + 观�
 4. 简单 RAG 一开始就上 LangGraph，复杂度过高。
 5. 生产环境没接 LangSmith，问题发生后无法定位。
 
-## 8. 自测问题
+## 8. 可运行 Demo
+
+先完成 [示例统一准备](./examples/README.md)，再运行：
+
+~~~powershell
+python doc\langchain-ecosystem\examples\01_chat_basics.py
+~~~
+
+该脚本实际调用 OpenAI ChatGPT，并把 Prompt、模型适配器和输出解析器连成最小链路。
+
+## 9. 自测问题
 
 1. `langchain_core` 和 `langchain` 是什么关系？
 + `langchain_core` 是基础接口，`langchain` 是应用开发框架。

@@ -122,7 +122,19 @@ Feedback 是用户或人工评审对回答的反馈。
 - 检索为空比例
 - 用户负反馈比例
 
-## 7. 本模块自测
+## 7. 可运行 Demo
+
+完成 [示例统一准备](./examples/README.md)，并在 `.env` 设置
+`LANGSMITH_TRACING=true`、`LANGSMITH_API_KEY` 后运行：
+
+~~~powershell
+python doc\langchain-ecosystem\examples\07_langsmith.py
+~~~
+
+该脚本用 `@traceable` 包裹一次 `ChatOpenAI` 调用；运行结束后可在 LangSmith
+项目中查看这次 ChatGPT 调用的 trace。
+
+## 8. 本模块自测
 
 1. Trace 能看到哪些信息？
 2. 为什么只看最终答案不够？

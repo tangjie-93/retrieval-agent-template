@@ -153,7 +153,18 @@ START
   -> END
 ```
 
-## 9. 本模块自测
+## 9. 可运行 Demo
+
+完成 [示例统一准备](./examples/README.md) 后运行：
+
+~~~powershell
+python doc\langchain-ecosystem\examples\06_langgraph.py
+~~~
+
+该脚本定义 State、模型 Node 和 `START -> Node -> END` 边，并在 Node 内由
+`ChatOpenAI` 调用 OpenAI ChatGPT。
+
+## 10. 本模块自测
 
 1. State、Node、Edge 分别是什么？
 2. Conditional Edge 解决什么问题？
