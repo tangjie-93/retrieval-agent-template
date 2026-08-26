@@ -168,9 +168,9 @@ python doc\langchain-ecosystem\examples\06_langgraph\enterprise_rag_graph.py
 
 联网模型节点综合 Demo：
 
-~~~powershell
+```powershell
 python doc\langchain-ecosystem\examples\06_langgraph.py
-~~~
+```
 
 该脚本定义 State、模型 Node 和 `START -> Node -> END` 边，并在 Node 内由
 `ChatOpenAI` 调用 OpenAI ChatGPT。
@@ -178,7 +178,28 @@ python doc\langchain-ecosystem\examples\06_langgraph.py
 ## 10. 本模块自测
 
 1. State、Node、Edge 分别是什么？
+  + State 是图的共享数据包。
+  + Node 是图里的一个处理步骤。
+  + Edge 决定节点之间怎么走。
 2. Conditional Edge 解决什么问题？
+  + 根据状态决定下一步。
+  + 可以处理分支、循环、条件判断。
+  + 人工审批、工具调用中断等场景。
 3. 什么场景需要 Checkpointer？
+  + 多轮对话
+  + 长任务
+  + 人工审批
+  + 工具调用中断
+  + 服务重启后继续任务
 4. Human-in-the-loop 适合哪些场景？
+  + 合同风险确认
+  + 财务审批
+  + 人事制度解释
+  + 高风险操作
+  + 对外发送邮件
+  + 修改生产数据
 5. 为什么 LangGraph 比普通链更适合复杂 Agent？
+  + LangGraph 可以处理多步骤任务、条件分支、循环、状态持久化、人工审批等场景。
+  + 普通链只能处理线性流程，不能处理复杂场景。
+
+
